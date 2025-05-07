@@ -1,6 +1,8 @@
 import 'package:disney/data/Perso.dart';
 import 'package:disney/main.dart';
 import 'package:disney/screen/SearchPage.dart';
+import 'package:disney/screen/StatPage.dart';
+import 'package:disney/screen/UserPersoPage.dart';
 import 'package:disney/share/MainCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () => appState.resetFilters(),
               label: const Text('Réinitialiser'),
               icon: const Icon(Icons.clear),
-              backgroundColor: Colors.red,
+              backgroundColor: Theme.of(context).colorScheme.error,
             )
           : FloatingActionButton.extended(
               onPressed: () {
@@ -73,7 +75,31 @@ class _HomePageState extends State<HomePage> {
               },
               label: const Text('Rechercher'),
               icon: const Icon(Icons.search),
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Statpage()));
+              },
+              icon: Icon(Icons.pie_chart),
+              label: Text('Statistiques'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Userpersopage()));
+              },
+              icon: Icon(Icons.person),
+              label: Text('Mon perso'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

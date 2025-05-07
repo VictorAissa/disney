@@ -13,12 +13,12 @@ class PersoDetailPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Localisation"),
+          title: Text(perso.name),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(64.0),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,15 +39,6 @@ class PersoDetailPage extends StatelessWidget {
                         );
                       },
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    perso.name,
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
                   const Text(
