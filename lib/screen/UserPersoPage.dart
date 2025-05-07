@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:disney/data/Perso.dart';
 import 'package:disney/main.dart';
 import 'package:disney/service/SnackbarService.dart';
@@ -36,11 +37,34 @@ class _UserpersopageState extends State<UserPersoPage> {
     });
   }
 
+  List<Perso> reduceListToHundred(List<Perso> bigList) {
+    final random = Random();
+    List<Perso> reducedPersos = [];
+
+    List<Perso> tempList = List.from(bigList);
+
+    int maxToSelect = min(50, tempList.length);
+
+    for (int i = 0; i < maxToSelect; i++) {
+      int randomIndex = random.nextInt(tempList.length);
+      reducedPersos.add(tempList[randomIndex]);
+      tempList.removeAt(randomIndex);
+    }
+
+    return reducedPersos;
+  }
+
   Future<void> ProcessComparison() async {
     if (_image == null) return;
 
     try {
-      List<Perso> persos = persoState.persos;
+      List<Perso> persos;
+
+      if (persoState.persos.length > 50) {
+        persos = reduceListToHundred(persoState.persos);
+      } else {
+        persos = persoState.persos;
+      }
 
       Perso? bestMatchPerso;
       double lowestDifference = 1.0;
