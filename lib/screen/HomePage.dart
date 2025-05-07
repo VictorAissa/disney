@@ -3,6 +3,7 @@ import 'package:disney/main.dart';
 import 'package:disney/screen/SearchPage.dart';
 import 'package:disney/screen/StatPage.dart';
 import 'package:disney/screen/UserPersoPage.dart';
+import 'package:disney/service/SnackbarService.dart';
 import 'package:disney/share/MainCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +18,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PersoState>(context, listen: false).fetchPersos();
+      Provider.of<PersoState>(context, listen: false)
+          .fetchPersos()
+          .catchError((e) {
+        Snackbarservice().showSnackbar(e.toString(), context, error: true);
+      });
     });
   }
 

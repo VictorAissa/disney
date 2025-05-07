@@ -1,8 +1,9 @@
 import 'dart:io';
-
 import 'package:disney/data/Perso.dart';
 import 'package:disney/main.dart';
+import 'package:disney/service/SnackbarService.dart';
 import 'package:flutter/material.dart';
+import 'package:image_compare_2/image_compare_2.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,13 @@ class _UserpersopageState extends State<UserPersoPage> {
   Perso? _matchedPerso;
   double _matchPercentage = 0.0;
   bool _isLoading = false;
+  late PersoState persoState;
+
+  @override
+  void initState() {
+    super.initState();
+    persoState = Provider.of<PersoState>(context, listen: false);
+  }
 
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -26,6 +34,47 @@ class _UserpersopageState extends State<UserPersoPage> {
         _matchedPerso = null;
       }
     });
+  }
+
+  Future<void> ProcessComparison() async {
+    if (_image == null) return;
+
+    try {
+      List<Perso> persos = persoState.persos;
+
+      Perso? bestMatchPerso;
+      double lowestDifference = 1.0;
+
+      for (var perso in persos) {
+        try {
+          double difference = await compareImages(
+            src1: _image!,
+            src2: Uri.parse(perso.imageUrl),
+            algorithm: EuclideanColorDistance(),
+          );
+
+          if (difference < lowestDifference) {
+            lowestDifference = difference;
+            bestMatchPerso = perso;
+          }
+        } catch (e) {
+          Snackbarservice().showSnackbar(e.toString(), context, error: true);
+        }
+      }
+
+      setState(() {
+        _matchedPerso = bestMatchPerso;
+
+        _matchPercentage =
+            bestMatchPerso != null ? (1.0 - lowestDifference) * 100 : 0.0;
+      });
+    } catch (e) {
+      Snackbarservice().showSnackbar(e.toString(), context, error: true);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -59,21 +108,15 @@ class _UserpersopageState extends State<UserPersoPage> {
                   ElevatedButton(
                     onPressed: _isLoading
                         ? null
-                        : () {
+                        : () async {
                             setState(() {
                               _isLoading = true;
-                              // Simulation de traitement (à remplacer)
-                              Future.delayed(const Duration(seconds: 2), () {
-                                setState(() {
-                                  _isLoading = false;
-                                  _matchedPerso = Provider.of<PersoState>(
-                                          context,
-                                          listen: false)
-                                      .persos
-                                      .first;
-                                  _matchPercentage = 78.5;
-                                });
-                              });
+                            });
+
+                            await ProcessComparison();
+
+                            setState(() {
+                              _isLoading = false;
                             });
                           },
                     child: const Text("Trouver mon double"),
