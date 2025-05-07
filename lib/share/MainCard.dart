@@ -10,18 +10,6 @@ class MainCard extends StatelessWidget {
     required this.perso,
   });
 
-  String _cleanImageUrl(String url) {
-    if (url.isEmpty) {
-      return 'https://picsum.photos/200/300?grayscale';
-    }
-
-    if (url.contains('?')) {
-      return url.split('?')[0];
-    }
-
-    return url;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -38,7 +26,7 @@ class MainCard extends StatelessWidget {
                 width: 100,
                 height: 80,
                 child: Image.network(
-                  _cleanImageUrl(perso.imageUrl),
+                  perso.imageUrl,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(

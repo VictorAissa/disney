@@ -1,5 +1,6 @@
 import 'package:disney/data/Perso.dart';
 import 'package:disney/main.dart';
+import 'package:disney/screen/SearchPage.dart';
 import 'package:disney/share/MainCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,26 +28,51 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Personnages'),
         centerTitle: true,
+        actions: [
+          if (appState.isFiltered)
+            IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => appState.resetFilters(),
+              tooltip: 'Effacer la recherche',
+            ),
+        ],
       ),
-      body: appState.isLoading 
-        ? Center(child: CircularProgressIndicator())
-        : appState.error != null 
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Erreur: ${appState.error}'),
-                  ElevatedButton(
-                    onPressed: () => appState.fetchPersos(),
-                    child: Text('Réessayer'),
+      body: appState.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : appState.persos.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Aucun personnage à afficher.'),
+                      ElevatedButton(
+                        onPressed: () => appState.fetchPersos(),
+                        child: Text('Réessayer'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                )
+              : ListView(
+                  children: appState.persos
+                      .map((perso) => MainCard(perso: perso))
+                      .toList(),
+                ),
+      floatingActionButton: appState.isFiltered
+          ? FloatingActionButton.extended(
+              onPressed: () => appState.resetFilters(),
+              label: const Text('Réinitialiser'),
+              icon: const Icon(Icons.clear),
+              backgroundColor: Colors.red,
             )
-          : ListView(
-              children: appState.persos
-                .map((perso) => MainCard(perso: perso))
-                .toList(),
+          : FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SearchPage()));
+              },
+              label: const Text('Rechercher'),
+              icon: const Icon(Icons.search),
             ),
     );
   }
