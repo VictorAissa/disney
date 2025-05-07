@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
             TextButton.icon(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Userpersopage()));
+                    MaterialPageRoute(builder: (context) => UserPersoPage()));
               },
               icon: Icon(Icons.person),
               label: Text('Mon perso'),

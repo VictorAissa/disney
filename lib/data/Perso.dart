@@ -33,15 +33,6 @@ class Perso {
       this.__v);
 
   factory Perso.fromJson(Map<String, dynamic> json) {
-    String cleanImageUrl = json['imageUrl'] ?? '';
-    if (cleanImageUrl.isNotEmpty && cleanImageUrl.contains('?')) {
-      cleanImageUrl = cleanImageUrl.split('?')[0];
-    }
-
-    if (cleanImageUrl.isEmpty) {
-      cleanImageUrl = 'https://picsum.photos/200/300?grayscale';
-    }
-
     return Perso(
       json['_id'],
       _parseStringList(json['films']),
@@ -53,7 +44,7 @@ class Perso {
       _parseStringList(json['enemies']),
       json['sourceUrl'] ?? '',
       json['name'] ?? '',
-      cleanImageUrl,
+      json['imageUrl'] ?? '',
       json['createdAt'] ?? '',
       json['updatedAt'] ?? '',
       json['url'] ?? '',
